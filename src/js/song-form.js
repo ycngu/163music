@@ -1,7 +1,7 @@
 {
   let view = {
     el: '.page > main',
-    init(){
+    init() {
       this.$el = $(this.el)
     },
     template: `
@@ -29,75 +29,86 @@
         </div>
       </form>
     `,
-    render(data = {}){
+    render(data = {}) {
       let placeholders = ['name', 'url', 'singer', 'id']
       let html = this.template
-      placeholders.map((string)=>{
+      placeholders.map((string) => {
         html = html.replace(`__${string}__`, data[string] || '')
       })
       $(this.el).html(html)
-      if(data.id){
+      if (data.id) {
         $(this.el).prepend('<h1>编辑歌曲</h1>')
-      }else{
+      } else {
         $(this.el).prepend('<h1>新建歌曲</h1>')
       }
     },
-    reset(){
+    reset() {
       this.render({})
     }
   }
   let model = {
     data: {
-      name: '', singer: '', url: '', id: ''
+      name: '',
+      singer: '',
+      url: '',
+      id: ''
     },
-    create(data){
+    create(data) {
       var Song = AV.Object.extend('Song');
       var song = new Song();
-      song.set('name',data.name);
-      song.set('singer',data.singer);
-      song.set('url',data.url);
-      return song.save().then((newSong) =>{
-        let {id, attributes} = newSong
-        Object.assign(this.data, { id, ...attributes })
-      }, (error) =>{
+      song.set('name', data.name);
+      song.set('singer', data.singer);
+      song.set('url', data.url);
+      return song.save().then((newSong) => {
+        let {
+          id,
+          attributes
+        } = newSong
+        Object.assign(this.data, {
+          id,
+          ...attributes
+        })
+      }, (error) => {
         console.error(error);
-      });    
+      });
     }
   }
   let controller = {
-    init(view, model){
+    init(view, model) {
       this.view = view
       this.view.init()
       this.model = model
       this.view.render(this.model.data)
       this.bindEvents()
-      window.eventHub.on('upload', (data)=>{
+
+      window.eventHub.on('select', (data) => {
         this.model.data = data
         this.view.render(this.model.data)
       })
-      window.eventHub.on('select', (data)=>{
-        this.model.data = data
-        this.view.render(this.model.data)
-      })
-      window.eventHub.on('new', ()=>{
-        console.log('aaaaaaaaaaaaaaaaaaa')
-        console.log('new')
-        this.model.data = {
-          name: '', singer: '', url: '', id: ''
+      window.eventHub.on('new', (data) => {
+        if (this.model.data.id) {
+          this.model.data = {
+            name: '',
+            singer: '',
+            url: '',
+            id: ''
+          }
+        } else {
+          Object.assign(this.model.data,data)
         }
         this.view.render(this.model.data)
       })
     },
-    bindEvents(){
-      this.view.$el.on('submit', 'form', (e)=>{
+    bindEvents() {
+      this.view.$el.on('submit', 'form', (e) => {
         e.preventDefault()
         let needs = 'name singer url'.split(' ')
         let data = {}
-        needs.map((string)=>{
+        needs.map((string) => {
           data[string] = this.view.$el.find(`[name="${string}"]`).val()
         })
         this.model.create(data)
-          .then(()=>{
+          .then(() => {
             this.view.reset()
             //this.model.data === 'ADDR 108'
             let string = JSON.stringify(this.model.data)
