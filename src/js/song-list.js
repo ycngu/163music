@@ -35,9 +35,12 @@
         this.view.clearActive()
       })
       window.eventHub.on('create', (songData)=>{
-        // songs = ['ADDR 108']
         this.model.data.songs.push(songData)
         this.view.render(this.model.data)
+      })
+      let query = new AV.Query('Song')
+      query.find().then((res)=>{
+        console.log(res)
       })
     }
   }

@@ -1,9 +1,11 @@
-{
-  let APP_ID = 'KOi8a7LVf2KuViQRUxhfRpnd-gzGzoHsz';
-  let APP_KEY = 'mFRdDmeLhSdr3UO3iSI8K3ex';
+fs = require('fs')
+var APP_ID = 'BpRDxrD5ekiyXXc7ruHL9ooy-gzGzoHsz';
+var APP_KEY = '60kbTMFODU37TGXG0XwuAx8q';
 
-  AV.init({
-    appId: APP_ID,
-    appKey: APP_KEY
-  });
-}
+var key = fs.readFileSync('../../leancloud.json')
+var {APP_ID, APP_KEY} = JSON.parse(key)
+
+AV.init({
+  appId: APP_ID,
+  appKey: APP_KEY
+})
