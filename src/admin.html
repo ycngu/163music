@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="zh-Hans">
+
 <head>
   <meta charset="UTF-8">
   <title>管理页面</title>
   <link rel="stylesheet" href="./css/default.css">
 </head>
+
 <body>
 
   <div class="page">
@@ -25,8 +27,11 @@
     <main>
     </main>
   </div>
-  
-  
+  <div id="siteLoading" class="wrapper">
+    <div class="loading"></div>
+  </div>
+
+
   <script src="../node_modules/leancloud-storage/dist/av-min.js"></script>
   <script src="./js/initializers/av.js"></script>
   <script src="../node_modules/jquery/dist/jquery.min.js"></script>
@@ -35,8 +40,10 @@
   <script src="../node_modules/qiniu-js/dist/qiniu.min.js"></script>
   <script src="./js/event-hub.js"></script>
   <script src="./js/song-form.js"></script>
+  <script src="./js/loading.js"></script>
   <script src="./js/new-song.js"></script>
   <script src="./js/song-list.js"></script>
   <script src="./js/upload-song.js"></script>
 </body>
+
 </html>
