@@ -5,7 +5,6 @@
             $(this.el).addClass('active')
         },
         hide() {
-            console.log('hide')
             $(this.el).removeClass('active')
         }
     }
