@@ -9,54 +9,6 @@
   <!-- <link rel="stylesheet" href="./src/reset.css">
   <link rel="stylesheet" href="./src/home.css">
   <link rel="stylesheet" href="./vendors/loaders.min.css"> -->
-  <script>
-    ;(function(designWidth) {
-      var doc = document,
-      win = window,
-      docEl = doc.documentElement,
-      remStyle = document.createElement("style"),
-      tid;
-
-      function refreshRem() {
-        var width = docEl.getBoundingClientRect().width;
-        // maxWidth = maxWidth || 540;
-        // width>maxWidth && (width=maxWidth); //若width>maxWidth ，则执行width = maxWidth,限制rem大小
-        var rem = width * 100 / designWidth;
-        remStyle.innerHTML = 'html{font-size:' + rem + 'px;}';
-      }
-
-      if (docEl.firstElementChild) {
-        docEl.firstElementChild.appendChild(remStyle);
-      } else {
-        var wrap = doc.createElement("div");
-        wrap.appendChild(remStyle);
-        doc.write(wrap.innerHTML);
-        wrap = null;
-      }
-      //要等 wiewport 设置好后才能执行 refreshRem，不然 refreshRem 会执行2次；
-      refreshRem();
-
-      win.addEventListener("resize", function() {
-        clearTimeout(tid); //防止执行两次
-        tid = setTimeout(refreshRem, 300);
-      }, false);
-
-      win.addEventListener("pageshow", function(e) {
-        if (e.persisted) { // 浏览器后退的时候重新计算
-          clearTimeout(tid);
-          tid = setTimeout(refreshRem, 300);
-        }
-      }, false);
-
-      if (doc.readyState === "complete") {
-        doc.body.style.fontSize = "16px";
-      } else {
-        doc.addEventListener("DOMContentLoaded", function(e) {
-          doc.body.style.fontSize = "16px";
-        }, false);
-      }
-    })(375);
- </script>
 </head>
 
 <body>
@@ -96,16 +48,16 @@
         </div>
         <a href="#">下载APP</a>
       </section>
-      <section class="globalTabs">
+      <section class="globalTabs" id="tabs">
         <ol class="tabs-nav">
-          <li class=active>
+          <li class=active data-tab-name="page-1">
             <div class="text"> 推荐音乐 </div>
           </li>
           <li>
-            <div class="text">热歌榜</div>
+            <div class="text" data-tab-name="page-2">热歌榜</div>
           </li>
           <li>
-            <div class="text">搜索</div>
+            <div class="text" data-tab-name="page-3">搜索</div>
           </li>
         </ol>
       </section>
@@ -220,6 +172,14 @@
       }
   });
   </script> -->
+  <script src="../node_modules/leancloud-storage/dist/av-min.js"></script>
+  <script src="./js/initializers/av.js"></script>
+  <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="./js/index/event-hub.js"></script>
+  <script src="./js/index/tabs.js"></script>
+  <script src="./js/index/page-1.js"></script>
+  <script src="./js/index/page-2.js"></script>
+  <script src="./js/index/page-3.js"></script>
 </body>
 
 </html>
