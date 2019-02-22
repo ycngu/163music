@@ -10,7 +10,7 @@
             if(this.$el.find('audio').attr('src') !== song.url){
                 this.$el.find('audio').attr('src',`${song.url}`)
             }
-            this.$el.css('background-image', `url(${song.cover})`)
+            this.$el.find(".background").css('background-image', `url(${song.cover})`)
             if( status === 'playing'){
                 this.$el.find('.disc-container').addClass('playing')
             } else {
