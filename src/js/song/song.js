@@ -1,22 +1,24 @@
 {
     let view = {
         el: '#app',
-        template:`
-            <audio src="{{url}}"></audio>
-            <div>
-                <button class="play">播放</button>
-                <button class="pause">暂停</button>
-            <div>
-        `,
         init() {
             this.$el = $(this.el)
         },
         render(data){
-            this.$el.html(this.template.replace('{{url}}',data.url))
+            let {song, status} = data
+            this.$el.find('audio').attr('src',`${song.url}`)
+            this.$el.find('img.cover').attr('src',`${song.cover}`)
+            this.$el.css('background-image', `url(${song.cover})`)
+            if( status === 'playing'){
+                this.$el.find('.disc-container').addClass('playing')
+            } else {
+                this.$el.find('.disc-container').removeClass('playing')
+            }
         },
         play(){
             let audio = this.$el.find('audio')[0]
             audio.play()
+            console.log('2')
         },
         pause(){
             let audio = this.$el.find('audio')[0]
@@ -25,15 +27,18 @@
     }
     let model = {
         data: {
-            id: '',
-            name: '',
-            singer: '',
-            url: ''
+            song: {
+                id: '',
+                name: '',
+                singer: '',
+                url: ''
+            },
+            status:'paused'
         },
         get(id) {
             var query = new AV.Query('Song');
             return query.get(id).then((song)=>{
-                Object.assign(this.data, {id:song.id,...song.attributes})
+                Object.assign(this.data.song, {id:song.id,...song.attributes})
                 return song
             })
         }
@@ -51,8 +56,16 @@
 
         },
         bindEvents(){
-            $(this.view.$el.on('click','.play',()=>{
-                this.view.play()
+            $(this.view.$el.on('click','.cover',()=>{
+                if(this.model.data.status === 'paused'){
+                    this.model.data.status = 'playing'
+                    this.view.render(this.model.data)
+                    this.view.play()
+                } else {
+                    this.model.data.status = 'paused'
+                    this.view.render(this.model.data)
+                    this.view.paused()
+                }
             }))
             $(this.view.$el.on('click','.pause',()=>{
                 this.view.pause()
