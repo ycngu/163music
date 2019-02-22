@@ -6,8 +6,10 @@
         },
         render(data){
             let {song, status} = data
-            this.$el.find('audio').attr('src',`${song.url}`)
             this.$el.find('img.cover').attr('src',`${song.cover}`)
+            if(this.$el.find('audio').attr('src') !== song.url){
+                this.$el.find('audio').attr('src',`${song.url}`)
+            }
             this.$el.css('background-image', `url(${song.cover})`)
             if( status === 'playing'){
                 this.$el.find('.disc-container').addClass('playing')
@@ -64,7 +66,7 @@
                 } else {
                     this.model.data.status = 'paused'
                     this.view.render(this.model.data)
-                    this.view.paused()
+                    this.view.pause()
                 }
             }))
             $(this.view.$el.on('click','.pause',()=>{
