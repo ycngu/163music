@@ -91,10 +91,7 @@
             player.addEventListener("timeupdate", function(e) {
                 // if (!that.lyric) return;
                 for (var i = 0, l = onceLrc.length; i < l; i++) {
-                    if (player.currentTime > onceLrc[i][0] - 0.50 /*preload the lyric by 0.50s*/ ) {
-                        //single line display mode
-                        // that.lyricContainer.textContent = that.lyric[i][1]
-                        //scroll mode
+                    if (player.currentTime > onceLrc[i][0] - 0.50) {
                         var pp = lyricContainer.querySelectorAll('.current-line-1')
                         pp.forEach(function (o) {
                             o.classList.remove('current-line-1')

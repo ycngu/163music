@@ -32,27 +32,6 @@ parseLyric = function(text) {
         return result
 }
 
-// getLyric = function(url) {
-//         var that = this
-//         var request = new XMLHttpRequest()
-//         request.open('GET', url, true)
-//         request.responseType = 'text'
-//         //fix for the messy code problem for Chinese.  
-//         // reference: http://xx.time8.org/php/20101218/ajax-xmlhttprequest.html
-//         //request['overrideMimeType'] && request.overrideMimeType("text/html;charset=gb2312");
-//         request.onload = function() {
-//             that.lyric = that.parseLyric(request.response)
-//             onceLrc = that.lyric
-//             //display lyric to the page
-//             that.appendLyric(that.lyric)
-//         };
-//         request.onerror = request.onabort = function(e) {
-//             that.lyricContainer.textContent = '!failed to load the lyric :('
-//         }
-//         this.lyricContainer.textContent = 'loading lyric...'
-//         request.send()
-// }
-
 appendLyric = function(lyric,view) {
     console.log(lyric)
         var lyricContainer = view

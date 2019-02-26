@@ -11,9 +11,18 @@
 
   <div class="page">
     <aside>
-      <div class="newSong">
-      </div>
+        <div class="newSong">
+          新建歌曲
+        </div>
+        <div class="createPlaylist">
+            创建歌单
+        </div>
+        <div class="playList">
+          歌单管理
+        </div>
       <div id="songList-container">
+      </div>
+      <div id="playList-container">
       </div>
       <div class="uploadArea">
         <div id="uploadContainer" class="draggable">
@@ -31,6 +40,7 @@
     <div class="loading"></div>
   </div>
 
+  </form>
 
   <script src="../node_modules/leancloud-storage/dist/av-min.js"></script>
   <script src="./js/initializers/av.js"></script>
@@ -44,6 +54,10 @@
   <script src="./js/admin/new-song.js"></script>
   <script src="./js/admin/song-list.js"></script>
   <script src="./js/admin/upload-song.js"></script>
+  <script src="./js/admin/createPlaylist.js"></script>
+  <script src="./js/admin/playlist/createPlaylist.js"></script>
+  <script src="./js/admin/playlist/playlist-form.js"></script>
+  <script src="./js/admin/playlist/playlist.js"></script>
 </body>
 
 </html>

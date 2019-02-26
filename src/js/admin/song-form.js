@@ -5,7 +5,7 @@
       this.$el = $(this.el)
     },
     template: `
-      <form class="form">
+      <form class="songform">
         <div class="row">
           <label>
           歌名
@@ -101,6 +101,7 @@
       });
     }
   }
+
   let controller = {
     init(view, model) {
       this.view = view
@@ -154,7 +155,7 @@
       })
     },
     bindEvents() {
-      this.view.$el.on('submit', 'form', (e) => {
+      this.view.$el.on('submit', 'songform', (e) => {
         e.preventDefault()
         if (this.model.data.id) {
           this.update()
