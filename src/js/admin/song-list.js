@@ -7,6 +7,7 @@
     `,
     render(data) {
       let $el = $(this.el)
+      $el.addClass('active').siblings('.active').remove('active')
       $el.html(this.template)
       let { songs, selectedSongId} = data
       let liList = songs.map((song) =>{
@@ -21,11 +22,7 @@
         $el.find('ul').append(domLi)
       })
     },
-    // activeItem(li){
-    //   let $li = $(li)
-    //   $li.addClass('active')
-    //     .siblings('.active').removeClass('active')
-    // },
+
     clearActive() {
       $(this.el).find('.active').removeClass('active')
     }
@@ -65,7 +62,6 @@
     },
     bindEvents(){
       $(this.view.el).on('click','li',(e)=>{
-        // this.view.activeItem(e.currentTarget)
         let songId = e.currentTarget.getAttribute('data-song-id')
 
         this.model.data.selectedSongId = songId
@@ -88,6 +84,7 @@
         this.view.render(this.model.data)
       })
       window.eventHub.on('new',()=>{
+        this.view.render(this.model.data)
         this.view.clearActive()
       })
       window.eventHub.on('update',(song)=>{

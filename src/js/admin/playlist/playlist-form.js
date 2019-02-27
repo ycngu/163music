@@ -3,20 +3,29 @@
         el: '.page > main',
         template: `
         <div class="playlistForm-wrapper">
-        <h1>创建歌单</h1>
         <form class="playlistForm">
           <div class="row">
-            <label>歌单名 <input type="text" name="name"></label>
+            <label>歌单名</label><input type="text" name="name" value="__name__">
           </div>
           <div class="row">
-            <label>简介<textarea name="summary" id="" cols="30" rows="10"></textarea></label>
+            <label>简介</label><textarea name="summary" id="" cols="100" rows="10" value="__summary__"></textarea>
           </div>
-          <div class="row">
-            <button type="submit">创建</button>
+          <div class="row actions">
+            <button type="submit">保存</button>
           </div>
         </div>`,
-        render(){
-            this.$el.html(this.template)
+        render(data = {}) {
+            let placeholders = ['name', 'summary']
+            let html = this.template
+            placeholders.map((string) => {
+                html = html.replace(`__${string}__`, data[string] || '')
+            })
+            $(this.el).html(html)
+            if (data.id) {
+                $(this.el).prepend('<h1>编辑歌单</h1>')
+            } else {
+                $(this.el).prepend('<h1>新建歌单</h1>')
+            }
         },
         init() {
             this.$el = $(this.el)
@@ -24,6 +33,10 @@
     }
 
     let model = {
+        data: {
+            lists: [],
+            selectedListId: null
+        },
         create(data) {
             var PlayList = AV.Object.extend('PlayList')
             var playlist = new PlayList()
@@ -48,9 +61,14 @@
             this.bindEvents()
         },
         bindEvents() {
-            window.eventHub.on('createPlaylistform',()=>{
+            window.eventHub.on('createPlaylistform', () => {
                 this.view.$el.html(this.view.template)
                 this.view.$form = this.view.$el.find('.playlistForm')
+            })
+
+            window.eventHub.on('selectPlayList', (data) => {
+                this.model.data = data
+                this.view.render(this.model.data)
             })
 
             this.view.$el.on('submit', '.playlistForm', (e) => {
@@ -67,8 +85,8 @@
                 this.model.create(data)
             })
             // this.findAll()
-            
-            
+
+
         },
         findAll(listId) {
 
@@ -93,5 +111,3 @@
 
     controller.init(view, model)
 }
-
-

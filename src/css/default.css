@@ -60,6 +60,7 @@ body {
 .newSong,
 .playList,
 .createPlaylist {
+  cursor: pointer;
   text-align: center;
   padding: 10px;
 }
@@ -72,16 +73,19 @@ body {
 }
 
 
-#songList-container {
-  flex-grow: 1;
-}
-
+#songList-container,
 #playList-container {
   display: none;
   flex-grow: 1;
 }
 
-.songList ,
+#songList-container.active,
+#playList-container.active {
+  display: block;
+}
+
+
+.songList,
 .songPlayList {
   text-align: left;
   border-top: 1px solid #999;
@@ -123,16 +127,19 @@ body {
   background: #d4d4d4;
 }
 
-.songform {
+.songform,
+.playlistForm {
   font-size: 14px;
 }
 
-.songform>.row {
+.songform>.row,
+.playlistForm>.row {
   margin: 20px 0;
   display: flex;
 }
 
-.songform>.row>label {
+.songform>.row>label,
+.playlistForm>.row>label {
   width: 4em;
   display: flex;
   justify-content: flex-end;
@@ -140,11 +147,13 @@ body {
   margin-right: 5px;
 }
 
-.songform>.row.actions {
+.songform>.row.actions,
+.playlistForm>.row.actions {
   margin-left: calc(4em + 5px);
 }
 
-.songform input[type=text] {
+.songform input[type=text] 
+.playlistForm input[type=text] {
   padding: 3px 8px;
   border-radius: 5px;
   border: 1px solid #ddd;
@@ -153,7 +162,10 @@ body {
 
 .songform input[type=button],
 .songform input[type=submit],
-.songform button {
+.songform button ,
+.playlistForm input[type=button],
+.playlistForm input[type=submit],
+.playlistForm button {
   height: 30px;
   padding-left: 10px;
   padding-right: 10px;

@@ -4,32 +4,38 @@
         init() {
             this.$el = $(this.el)
         },
-        template:`
-        <ul class="songPlayList">
-        </ul>
-       `,
-       render(data) {
-           let $el = $('#songList-container')
-           $el.html(this.template)
-           let { lists, selectedListId} = data
-           let liList = lists.map((list) =>{
-             let $li = $('<li></li>').text(list.name).attr('data-list-id',list.id)
-             if(selectedListId === list.id){
-               $li.addClass('active')
-             }
-             return $li
-           })
-           $el.find('ul').empty()
-           liList.map((domLi) => {
-             $el.find('ul').append(domLi)
-           })
-         },
+        template: `<ul class="songPlayList"></ul>`,
+
+        render(data) {
+            let $el = $('#playList-container')
+            $el.addClass('active').siblings('.active').remove('active')
+            $el.html(this.template)
+            let {
+                lists,
+                selectedListId
+            } = data
+            let liList = lists.map((list) => {
+                let $li = $('<li></li>').text(list.name).attr('data-list-id', list.id)
+                if (selectedListId === list.id) {
+                    $li.addClass('active')
+                }
+                return $li
+            })
+            $el.find('ul').empty()
+            liList.map((domLi) => {
+                $el.find('ul').append(domLi)
+            })
+        },
+
+        clearActive() {
+            $(this.el).find('.active').removeClass('active')
+        }
     }
 
     let model = {
         data: {
             lists: [],
-            selectedListId:null
+            selectedListId: null
         },
         find() {
             var query = new AV.Query('PlayList')
@@ -52,19 +58,59 @@
             this.model = model
             this.bindEvents()
             this.bindEventHub()
+            this.getAllLists()
         },
+        active() {
+            $(this.view.el).addClass('active')
+                .siblings('.active')
+                .removeClass('active')
+        },
+        deactive() {
+            $(this.view.el).removeClass('active')
+        },
+        getAllLists(){
+            return this.model.find().then(() => {
+              this.view.render(this.model.data)
+            })
+          },
         bindEvents() {
-            this.model.find()
+            window.eventHub.on('playlist',()=>{
+                this.active()
+            })
 
             this.view.$el.on('click', (e) => {
-                this.view.$el.addClass('active')
-                    .siblings('.active')
-                    .removeClass('active')
-                this.view.render(this.model.data)
+                window.eventHub.emit('playlist')
             })
+            
+            $('#playList-container').on('click', 'li', (e) => {
+                let listId = e.currentTarget.getAttribute('data-list-id')
+
+                this.model.data.selectedListId = listId
+                this.view.render(this.model.data)
+
+                let data
+                let lists = this.model.data.lists
+                for (let i = 0; i < lists.length; i++) {
+                    if (lists[i].id == listId) {
+                        data = lists[i]
+                        break
+                    }
+                }
+                console.log('data',data)
+                window.eventHub.emit('selectPlayList', JSON.parse(JSON.stringify(data))) //深拷贝
+                console.log('d')
+            })
+            
         },
         bindEventHub() {
-
+            window.eventHub.on('createPlaylistform', () => {
+                this.view.render(this.model.data)
+                this.view.clearActive()
+            })
+            window.eventHub.on('playlist', () => {
+                this.view.render(this.model.data)
+                this.view.clearActive()
+            })
         }
     }
 
