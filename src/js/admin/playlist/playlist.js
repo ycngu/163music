@@ -8,7 +8,6 @@
 
         render(data) {
             let $el = $('#playList-container')
-            $el.addClass('active').siblings('.active').remove('active')
             $el.html(this.template)
             let {
                 lists,
@@ -28,7 +27,8 @@
         },
 
         clearActive() {
-            $(this.el).find('.active').removeClass('active')
+            // $(this.el).find('.active').removeClass('active')
+            $('#playList-container').find('.active').removeClass('active')
         }
     }
 
@@ -68,20 +68,20 @@
         deactive() {
             $(this.view.el).removeClass('active')
         },
-        getAllLists(){
+        getAllLists() {
             return this.model.find().then(() => {
-              this.view.render(this.model.data)
+                this.view.render(this.model.data)
             })
-          },
+        },
         bindEvents() {
-            window.eventHub.on('playlist',()=>{
+            window.eventHub.on('playlist', () => {
                 this.active()
             })
 
             this.view.$el.on('click', (e) => {
                 window.eventHub.emit('playlist')
             })
-            
+
             $('#playList-container').on('click', 'li', (e) => {
                 let listId = e.currentTarget.getAttribute('data-list-id')
 
@@ -96,14 +96,15 @@
                         break
                     }
                 }
-                console.log('data',data)
+                console.log(data)
                 window.eventHub.emit('selectPlayList', JSON.parse(JSON.stringify(data))) //深拷贝
-                console.log('d')
+
             })
-            
+
         },
         bindEventHub() {
             window.eventHub.on('createPlaylistform', () => {
+                $('#playList-container').addClass('active').siblings('.active').remove('active')
                 this.view.render(this.model.data)
                 this.view.clearActive()
             })
@@ -111,6 +112,16 @@
                 this.view.render(this.model.data)
                 this.view.clearActive()
             })
+            window.eventHub.on('updatePlayList',(list)=>{
+                let lists = this.model.data.lists
+                for (let i = 0; i < lists.length; i++) {
+                  if(lists[i].id === list.id){
+                    lists[i] = list
+                    Object.assign(lists[i], list)
+                  }
+                }
+                this.view.render(this.model.data)
+              })
         }
     }
 

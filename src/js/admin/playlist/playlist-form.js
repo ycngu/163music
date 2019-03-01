@@ -8,18 +8,22 @@
             <label>歌单名</label><input type="text" name="name" value="__name__">
           </div>
           <div class="row">
-            <label>简介</label><textarea name="summary" id="" cols="100" rows="10" value="__summary__"></textarea>
+            <label>简介</label><textarea name="summary" id="" cols="100" rows="10">__summary__</textarea>
           </div>
           <div class="row actions">
             <button type="submit">保存</button>
           </div>
         </div>`,
         render(data = {}) {
+            console.log(data)
+            console.log('done')
             let placeholders = ['name', 'summary']
             let html = this.template
+            console.log('data.name',data.name,data.summary)
             placeholders.map((string) => {
                 html = html.replace(`__${string}__`, data[string] || '')
             })
+
             $(this.el).html(html)
             if (data.id) {
                 $(this.el).prepend('<h1>编辑歌单</h1>')
@@ -34,8 +38,8 @@
 
     let model = {
         data: {
-            lists: [],
-            selectedListId: null
+            name:'',
+            summary:''
         },
         create(data) {
             var PlayList = AV.Object.extend('PlayList')
@@ -45,12 +49,23 @@
 
 
 
-            playlist.save().then((newPlaylist) => {
-                window.alert('创建成功')
+            return playlist.save().then((newPlaylist) => {
+                let {id,attributes} = newSong
+                Object.assign(this.data, {id,...attributes})
             }, (err) => {
                 console.error(err)
             })
-        }
+        },
+        update(data){
+            var playlist = AV.Object.createWithoutData('PlayList', this.data.id);
+            playlist.set('name', data.name);
+            playlist.set('summary', data.summary);
+            console.log('update')
+            return playlist.save().then((res)=>{
+              Object.assign(this.data, data)
+              return res
+            });
+          },
     }
 
     let controller = {
@@ -62,7 +77,7 @@
         },
         bindEvents() {
             window.eventHub.on('createPlaylistform', () => {
-                this.view.$el.html(this.view.template)
+                this.view.render(this.view.template)
                 this.view.$form = this.view.$el.find('.playlistForm')
             })
 
@@ -72,21 +87,51 @@
             })
 
             this.view.$el.on('submit', '.playlistForm', (e) => {
-
                 e.preventDefault()
+                if (this.model.data.id) {
+                  this.update()
+                } else {
+                  this.create()
+                }
+                // e.preventDefault()
 
-                let form = this.view.$form.get(0)
-                let keys = ['name', 'summary']
-                let data = {}
-                keys.reduce((prev, item) => {
-                    prev[item] = form[item].value
-                    return prev
-                }, data)
-                this.model.create(data)
+                // let form = this.view.$form.get(0)
+                // let keys = ['name', 'summary']
+                // let data = {}
+                // keys.reduce((prev, item) => {
+                //     prev[item] = form[item].value
+                //     return prev
+                // }, data)
+                // this.model.create(data)
             })
             // this.findAll()
 
 
+        },
+        create() {
+            let needs = 'name summary'.split(' ')
+            let data = {}
+            needs.map((string) => {
+              data[string] = this.view.$el.find(`[name="${string}"]`).val()
+            })
+            this.model.create(data)
+              .then(() => {
+                this.view.reset()
+                let string = JSON.stringify(this.model.data)
+                let object = JSON.parse(string)
+                window.eventHub.emit('createPlaylistform', object)
+              })
+        },
+        update() {
+            let needs = 'name summary'.split(' ')
+            let data = {}
+            needs.map((string) => {
+              data[string] = this.view.$el.find(`[name="${string}"]`).val()
+            })
+            this.model.update(data).then(()=>{
+              window.alert('更新成功')
+              window.eventHub.emit('updatePlayList',JSON.parse(JSON.stringify(this.model.data)))
+            })
         },
         findAll(listId) {
 
