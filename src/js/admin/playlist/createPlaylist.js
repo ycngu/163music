@@ -11,14 +11,14 @@
             this.view = view
             this.model = model
             // this.view.render(this.model.data)
-            window.eventHub.on('createPlaylistform', (data) => {
+            window.eventHub.on('newPlaylistform', (data) => {
                 this.active()
             })
             window.eventHub.on('selectPlayList', (data)=>{
               this.deactive()
             })
             $(this.view.el).on('click', () => {
-                window.eventHub.emit('createPlaylistform')
+                window.eventHub.emit('newPlaylistform')
             })
         },
         active() {

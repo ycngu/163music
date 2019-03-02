@@ -15,11 +15,8 @@
           </div>
         </div>`,
         render(data = {}) {
-            console.log(data)
-            console.log('done')
             let placeholders = ['name', 'summary']
             let html = this.template
-            console.log('data.name',data.name,data.summary)
             placeholders.map((string) => {
                 html = html.replace(`__${string}__`, data[string] || '')
             })
@@ -33,6 +30,9 @@
         },
         init() {
             this.$el = $(this.el)
+        },
+        reset() {
+          this.render({})
         }
     }
 
@@ -50,7 +50,8 @@
 
 
             return playlist.save().then((newPlaylist) => {
-                let {id,attributes} = newSong
+                let {id,attributes} = newPlaylist
+
                 Object.assign(this.data, {id,...attributes})
             }, (err) => {
                 console.error(err)
@@ -60,7 +61,6 @@
             var playlist = AV.Object.createWithoutData('PlayList', this.data.id);
             playlist.set('name', data.name);
             playlist.set('summary', data.summary);
-            console.log('update')
             return playlist.save().then((res)=>{
               Object.assign(this.data, data)
               return res
@@ -76,9 +76,17 @@
             this.bindEvents()
         },
         bindEvents() {
-            window.eventHub.on('createPlaylistform', () => {
-                this.view.render(this.view.template)
-                this.view.$form = this.view.$el.find('.playlistForm')
+            window.eventHub.on('newPlaylistform', (data) => {
+
+              if (this.model.data.id) {
+                this.model.data = {
+                  name: '',
+                  summary: ''
+                }
+              } else {
+                Object.assign(this.model.data, data)
+              }
+              this.view.render(this.model.data)
             })
 
             window.eventHub.on('selectPlayList', (data) => {

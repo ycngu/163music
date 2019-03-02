@@ -96,22 +96,25 @@
                         break
                     }
                 }
-                console.log(data)
                 window.eventHub.emit('selectPlayList', JSON.parse(JSON.stringify(data))) //深拷贝
 
             })
 
         },
         bindEventHub() {
-            window.eventHub.on('createPlaylistform', () => {
+            window.eventHub.on('createPlaylistform', (songData) => {
+                this.model.data.lists.push(songData)
+                this.view.render(this.model.data)
+              })
+            window.eventHub.on('newPlaylistform', () => {
                 $('#playList-container').addClass('active').siblings('.active').remove('active')
                 this.view.render(this.model.data)
                 this.view.clearActive()
             })
-            window.eventHub.on('playlist', () => {
-                this.view.render(this.model.data)
-                this.view.clearActive()
-            })
+            // window.eventHub.on('playlist', () => {
+            //     this.view.render(this.model.data)
+            //     this.view.clearActive()
+            // })
             window.eventHub.on('updatePlayList',(list)=>{
                 let lists = this.model.data.lists
                 for (let i = 0; i < lists.length; i++) {

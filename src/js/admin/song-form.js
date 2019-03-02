@@ -116,10 +116,7 @@
         this.view.render(this.model.data)
       })
       window.eventHub.on('new', (data) => {
-        console.log('in')
         if (this.model.data.id) {
-        console.log('in1')
-
           this.model.data = {
             name: '',
             singer: '',
@@ -128,8 +125,6 @@
             lyrics:''
           }
         } else {
-        console.log('in2')
-
           Object.assign(this.model.data, data)
         }
         this.view.render(this.model.data)
@@ -164,11 +159,11 @@
       this.view.$el.on('submit', '.songform', (e) => {
         e.preventDefault()
         if (this.model.data.id) {
-          console.log('in3')
+          console.log('update')
           this.update()
         } else {
-          console.log('in4')
           this.create()
+          console.log('create')
         }
       })
     }
