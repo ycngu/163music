@@ -1,6 +1,6 @@
 {
     let view = {
-        el: '.playList',
+        el: '#playList-container',
         init() {
             this.$el = $(this.el)
         },
@@ -74,16 +74,9 @@
             })
         },
         bindEvents() {
-            window.eventHub.on('playlist', () => {
-                this.active()
-            })
-
-            this.view.$el.on('click', (e) => {
-                window.eventHub.emit('playlist')
-            })
-
             $('#playList-container').on('click', 'li', (e) => {
                 let listId = e.currentTarget.getAttribute('data-list-id')
+                window.eventHub.emit('plist-song',listId)
 
                 this.model.data.selectedListId = listId
                 this.view.render(this.model.data)
