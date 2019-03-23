@@ -74,13 +74,15 @@ body {
 
 
 #songList-container,
-#playList-container {
+#playList-container,
+#playList-container-copy {
   display: none;
   flex-grow: 1;
 }
 
 #songList-container.active,
-#playList-container.active {
+#playList-container.active,
+#playList-container-copy.active {
   display: block;
 }
 
@@ -236,4 +238,9 @@ body {
     height: 100px;
     opacity: 0;
   }
+}
+
+
+.lsonglist > li.active{
+  background: #999;
 }

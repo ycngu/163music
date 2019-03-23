@@ -1,13 +1,50 @@
+// {
+//     let view ={
+//         el:'#playList-container',
+//         $el:null,
+//         init(){
+//             this.$el = $(this.el)
+//         }
+//     }
+
+//     let model = {
+//         data:{
+
+//         }
+//     }
+
+//     let controller = {
+//         init(view, model){
+//             this.view = view
+//             this.model = model
+//             this.view.init()
+//             this.bindEvent()
+//             this.bindEventHub()
+//         },
+//         bindEvent(){
+
+//         },
+//         bindEventHub(){
+//             window.eventHub.on('newxx',()=>{
+//                 this.view.$el.addClass('active').siblings('.active').removeClass('active')
+//                 console.log('newxx')
+//             })
+//         }
+//     }
+
+//     controller.init(view, model)
+// }
+
 {
     let view = {
-        el: '#playList-container',
+        el: '#playList-container-copy',
         init() {
             this.$el = $(this.el)
         },
         template: `<ul class="songPlayList"></ul>`,
 
         render(data) {
-            let $el = $('#playList-container')
+            let $el = $('#playList-container-copy')
             $el.html(this.template)
             let {
                 lists,
@@ -28,7 +65,7 @@
 
         clearActive() {
             // $(this.el).find('.active').removeClass('active')
-            $('#playList-container').find('.active').removeClass('active')
+            $('#playList-container-copy').find('.active').removeClass('active')
         }
     }
 
@@ -74,9 +111,8 @@
             })
         },
         bindEvents() {
-            $('#playList-container').on('click', 'li', (e) => {
+            $('#playList-container-copy').on('click', 'li', (e) => {
                 let listId = e.currentTarget.getAttribute('data-list-id')
-                window.eventHub.emit('plist-song',listId)
 
                 this.model.data.selectedListId = listId
                 this.view.render(this.model.data)
@@ -89,19 +125,17 @@
                         break
                     }
                 }
-                window.eventHub.emit('selectPlayList', JSON.parse(JSON.stringify(data))) //深拷贝
-
+                window.eventHub.emit('selectxx', JSON.parse(JSON.stringify(data))) //深拷贝
             })
-
         },
         bindEventHub() {
-            window.eventHub.on('createPlaylistform', (songData) => {
-                this.model.data.lists.push(songData)
-                this.view.render(this.model.data)
-              })
-            window.eventHub.on('newPlaylistform', () => {
-                $('#playList-container').addClass('active').siblings('.active').remove('active')
-                this.view.render(this.model.data)
+            // window.eventHub.on('createPlaylistform', (songData) => {
+            //     this.model.data.lists.push(songData)
+            //     this.view.render(this.model.data)
+            //   })
+            window.eventHub.on('newxx', () => {
+                $('#playList-container-copy').addClass('active').siblings('.active').remove('active')
+                // this.view.render(this.model.data)
                 this.view.clearActive()
             })
             // window.eventHub.on('playlist', () => {
