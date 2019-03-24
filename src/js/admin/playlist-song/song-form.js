@@ -108,24 +108,6 @@
       })
     },
     bindEvents() {
-      // $(this.view.el).on('click', 'li', (e) => {
-      //   let songId = e.currentTarget.getAttribute('data-song-id')
-
-      //   this.model.data.selectedSongId = songId
-      //   this.view.render(this.model.data)
-
-      //   let data
-      //   let songs = this.model.data.songs
-      //   for (let i = 0; i < songs.length; i++) {
-      //     if (songs[i].id == songId) {
-      //       data = songs[i]
-      //       break
-      //     }
-      //   }
-      //   window.eventHub.emit('select', JSON.parse(JSON.stringify(data))) //深拷贝
-      // })
-      
-
       $(this.view.el).on('click','.lsonglist>li',(e)=>{
         let songId = e.currentTarget.getAttribute('data-song-id')
         console.log('songid',songId)
@@ -151,7 +133,6 @@
       //   this.model.data.songs.push(songData)
       //   this.view.render(this.model.data)
       // })
-
       window.eventHub.on('selectxx',(data)=>{
         this.model.data.listId = data.id
         this.model.findCurrentSongs(data.id).then(()=>{
