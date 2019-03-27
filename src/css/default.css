@@ -154,8 +154,7 @@ body {
   margin-left: calc(4em + 5px);
 }
 
-.songform input[type=text] 
-.playlistForm input[type=text] {
+.songform input[type=text] .playlistForm input[type=text] {
   padding: 3px 8px;
   border-radius: 5px;
   border: 1px solid #ddd;
@@ -164,7 +163,7 @@ body {
 
 .songform input[type=button],
 .songform input[type=submit],
-.songform button ,
+.songform button,
 .playlistForm input[type=button],
 .playlistForm input[type=submit],
 .playlistForm button {
@@ -241,6 +240,7 @@ body {
 }
 
 
-.lsonglist > li.active{
+.lsonglist>li.active,
+.rsonglist>li.active {
   background: #999;
 }

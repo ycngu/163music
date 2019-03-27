@@ -5,7 +5,7 @@
       <ul class="lsonglist"></ul>
       <button id="add">add</button>
       <button id="remove">remove</button>
-      <ul class="rsongList"></ul>
+      <ul class="rsonglist"></ul>
     `,
     render(data) {
       let $el = $(this.el)
@@ -34,9 +34,9 @@
         return $li
       })
 
-      $el.find('.rsongList').empty()
+      $el.find('.rsonglist').empty()
       liListR.map((domLi) => {
-        $el.find('.rsongList').append(domLi)
+        $el.find('.rsonglist').append(domLi)
       })
 
       $el.find('.lsongList').empty()
@@ -80,7 +80,6 @@
       query.equalTo('playlist', playlist);
 
       // 执行查询
-
       return query.find().then((lists) => {
         let songs = []
 
@@ -88,21 +87,17 @@
           return list.attributes.song
         })
 
-        AV.Object.fetchAll(songs).then(function (objects) {
+        AV.Object.fetchAll(songs).then((s) => {
           // 成功
-          console.log('object',objects)
-
-          this.data.rightSongs = objects.map((song)=>{
-            console.log('songggggggggg',song)
+          this.data.rightSongs = s.map((ss) => {
             return {
-              id:song.id,
-              ...attributes
+              id: ss.id,
+              ...ss.attributes
             }
           })
-          console.log('this.model.data.rightSongs',this.model.data.rightSongs)
         }, function (error) {
           // 异常处理
-          console.log('zzzzzzzzzzz',error)
+          console.log('zzzzzzzzzzz', error)
         });
 
         return lists
@@ -111,18 +106,73 @@
     setPointer(listId, songId) {
       if (!listId) return
       if (!songId) return
-      let song = AV.Object.createWithoutData('Song', songId);
-      let playlist = AV.Object.createWithoutData('PlayList', listId);
 
-      let listSongMAP = new AV.Object('ListSongMap');
+      // let query = new AV.Query('ListSongMap');
+      // //查询 songid 和 listid 相同的数据
+      // query.equalTo('song', songId);
+      // query.equalTo('playlist', listId);
+      var ll = AV.Object.createWithoutData('PlayList', listId);
+      var ss = AV.Object.createWithoutData('Song', songId);
 
-      // 设置关联
-      listSongMAP.set('song', song);
-      listSongMAP.set('playlist', playlist);
+      var Query1 = new AV.Query('ListSongMap');
+      Query1.equalTo('song', ss);
 
-      // listSongMAP.set('platform', 'web');
+      var Query2 = new AV.Query('ListSongMap');
+      Query2.equalTo('playlist', ll);
 
-      listSongMAP.save();
+      var query = AV.Query.and(Query1, Query2);
+
+      query.find().then((results) => {
+
+        if (results.length === 0) {
+          let song = AV.Object.createWithoutData('Song', songId);
+          let playlist = AV.Object.createWithoutData('PlayList', listId);
+
+          let listSongMap = new AV.Object('ListSongMap');
+
+          // 设置关联
+          listSongMap.set('song', song);
+          listSongMap.set('playlist', playlist);
+
+          // listSongMap.set('platform', 'web');
+          listSongMap.save();
+        } else {
+          window.alert('exist!!!')
+        }
+      }, function (error) {});
+
+
+    },
+    removePointer(listId, songId) {
+      var ll = AV.Object.createWithoutData('PlayList', listId);
+      var ss = AV.Object.createWithoutData('Song', songId);
+
+      var Query1 = new AV.Query('ListSongMap');
+      Query1.equalTo('song', ss);
+
+      var Query2 = new AV.Query('ListSongMap');
+      Query2.equalTo('playlist', ll);
+
+      var query = AV.Query.and(Query1, Query2);
+
+      query.find().then((results) => {
+
+        if (results.length === 0) {
+          console.log('do noting')
+        } else {
+          let id = results[0].id
+
+          let ListSongMap = AV.Object.createWithoutData('ListSongMap', id);
+
+          ListSongMap.destroy().then(function (success) {
+            console.log('reomve success',success)
+          }, function (error) {
+            // 删除失败
+            console.log('reomve fail')
+          });
+        }
+      }, function (error) {});
+
     }
   }
   let controller = {
@@ -144,8 +194,13 @@
     bindEvents() {
       $(this.view.el).on('click', '.lsonglist>li', (e) => {
         let songId = e.currentTarget.getAttribute('data-song-id')
-        console.log('songid', songId)
         this.model.data.leftSongId = songId
+        this.view.render(this.model.data)
+      })
+
+      $(this.view.el).on('click', '.rsonglist>li', (e) => {
+        let songId = e.currentTarget.getAttribute('data-song-id')
+        this.model.data.rightSongId = songId
         this.view.render(this.model.data)
       })
 
@@ -158,9 +213,24 @@
 
         this.model.findCurrentSongs(listId).then(() => {
           this.view.render(this.model.data)
+          setTimeout(() => {
+            $('#playList-container-copy>.songPlayList>li.active').click()
+          }, 800);
         })
       })
+
       $(this.view.el).on('click', '#remove', (e) => {
+        let songId = $(this.view.el).find('.rsonglist>li.active').attr('data-song-id')
+        let listId = this.model.data.listId
+
+        this.model.removePointer(listId, songId)
+
+        this.model.findCurrentSongs(listId).then(() => {
+          this.view.render(this.model.data)
+          setTimeout(() => {
+            $('#playList-container-copy>.songPlayList>li.active').click()
+          }, 800);
+        })
 
       })
     },
@@ -173,6 +243,9 @@
         this.model.data.listId = data.id
         this.model.findCurrentSongs(data.id).then(() => {
           this.view.render(this.model.data)
+          setTimeout(() => {
+            this.view.render(this.model.data)
+          }, 500);
         })
       })
       window.eventHub.on('newxx', () => {
