@@ -8,6 +8,9 @@
             <label>歌单名</label><input type="text" name="name" value="__name__">
           </div>
           <div class="row">
+            <label>cover</label><input type="text" name="cover" value="__cover__">
+          </div>
+          <div class="row">
             <label>简介</label><textarea name="summary" id="" cols="100" rows="10">__summary__</textarea>
           </div>
           <div class="row actions">
@@ -15,7 +18,7 @@
           </div>
         </div>`,
         render(data = {}) {
-            let placeholders = ['name', 'summary']
+            let placeholders = ['name', 'summary', 'cover']
             let html = this.template
             placeholders.map((string) => {
                 html = html.replace(`__${string}__`, data[string] || '')
@@ -39,13 +42,15 @@
     let model = {
         data: {
             name:'',
-            summary:''
+            summary:'',
+            cover:''
         },
         create(data) {
             var PlayList = AV.Object.extend('PlayList')
             var playlist = new PlayList()
             playlist.set('name', data.name)
             playlist.set('summary', data.summary)
+            playlist.set('cover', data.cover)
 
 
 
@@ -61,6 +66,7 @@
             var playlist = AV.Object.createWithoutData('PlayList', this.data.id);
             playlist.set('name', data.name);
             playlist.set('summary', data.summary);
+            playlist.set('cover', data.cover);
             return playlist.save().then((res)=>{
               Object.assign(this.data, data)
               return res
@@ -81,7 +87,8 @@
               if (this.model.data.id) {
                 this.model.data = {
                   name: '',
-                  summary: ''
+                  summary: '',
+                  cover:''
                 }
               } else {
                 Object.assign(this.model.data, data)
@@ -117,7 +124,7 @@
 
         },
         create() {
-            let needs = 'name summary'.split(' ')
+            let needs = 'name summary cover'.split(' ')
             let data = {}
             needs.map((string) => {
               data[string] = this.view.$el.find(`[name="${string}"]`).val()
@@ -131,10 +138,10 @@
               })
         },
         update() {
-            let needs = 'name summary'.split(' ')
+            let needs = 'name summary cover'.split(' ')
             let data = {}
             needs.map((string) => {
-              data[string] = this.view.$el.find(`[name="${string}"]`).val()
+              data[string] = this.view.$el.find(`[name="${string}"]`).val() 
             })
             this.model.update(data).then(()=>{
               window.alert('更新成功')

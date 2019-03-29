@@ -3,7 +3,16 @@
         el:"section.playLists",
 
     }
-    let model = {}
-    let controller = {}
-        
+    let model = {
+        data:{
+            id:'',
+            songs:[]
+        },
+    }
+    let controller = {
+        init(view,model){
+            this.view = view
+            this.model = model
+        },
+            
 }

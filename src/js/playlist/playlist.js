@@ -33,33 +33,41 @@
             })
         }
     }
+
     let model = {
-        data: {
-            songs: []
+        data:{
+            id:'',
+            songs:[]
         },
-        find() {
-            var query = new AV.Query('Song')
-            return query.find().then((songs) => {
-                this.data.songs = songs.map((song) => {
-                    return {
-                        id: song.id,
-                        ...song.attributes
-                    }
-                })
-                return songs
-            })
-        }
     }
+
     let controller = {
-        init(view, model) {
-            console.log('in')
+        init(view,model){
             this.view = view
-            this.view.init()
             this.model = model
-            this.model.find().then(()=>{
-                this.view.render(this.model.data)
+            this.model.id = getListId()
+        },
+            
+        getListId() {
+            let search = window.location.search
+
+            //去掉问号
+            if (search.indexOf('?') === 0) {
+                search = search.substring(1)
+            }
+
+            let array = search.split('&').filter((v => v))
+            let id = ''
+
+            array.forEach((current) => {
+                let [key, value] = current.split('=')
+                if (key === 'id') {
+                    id = value
+                    return false
+                }
             })
-        }
+
+            return id
+        }        
     }
-    controller.init(view,model)
 }
