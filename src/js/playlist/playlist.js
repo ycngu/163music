@@ -1,3 +1,4 @@
+
 {
     let view = {
         el: "section.songs",
@@ -17,11 +18,9 @@
         </a>
       </li>
         `,
-        init() {
-            this.$el = $(this.el)
-        },
         render(data){
-            let {songs} = data 
+           
+            let {songs} =  data
             songs.map((song)=>{
                 let $li = $(this.template
                     .replace('{{song.name}}',song.name)
@@ -29,7 +28,7 @@
                     .replace('{{song.id}}',song.id)
                 )
 
-                this.$el.find('ol.list').append($li)
+                $(this.el).find('ol.list').append($li)
             })
         }
     }
@@ -37,14 +36,14 @@
     let model = {
         data:{
             id:'',
-            songs:[]
+            songs:[],
+            song:[],
         },
         findCurrentSongs(listId) {
             if (!listId) return
-            var playlist = AV.Object.createWithoutData('PlayList', listId);
+            let playlist = AV.Object.createWithoutData('PlayList', listId);
             // 构建 ListSongMap 的查询
-            var query = new AV.Query('ListSongMap');
-      
+            let query = new AV.Query('ListSongMap');
             // 查询所有选择了playlist的
             query.equalTo('playlist', playlist);
       
@@ -56,33 +55,26 @@
                 return list.attributes.song
               })
       
+
               AV.Object.fetchAll(songs).then((s) => {
                 // 成功
-                this.data.songs = s.map((ss) => {
+
+                this.data.songs = s.map((song) => {
                   return {
-                    id: ss.id,
-                    ...ss.attributes
+                    id: song.id,
+                    ...song.attributes
                   }
                 })
+                console.log(this.data.songs)
               }, function (error) {
                 // 异常处理
-                console.log('zzzzzzzzzzz', error)
+                console.log('error', error)
               });
-      
-              return lists
+              
+              return songs
             })
           },
-    }
-
-    let controller = {
-        init(view,model){
-            this.view = view
-            this.model = model
-            this.model.id = getListId()
-            this.model.findCurrentSongs(this.model.id)
-        },
-            
-        getListId() {
+          getListId() {
             let search = window.location.search
 
             //去掉问号
@@ -102,7 +94,20 @@
             })
 
             return id
-        }        
+        },
+    }
+
+    let controller = {
+        init(view,model){
+            this.view = view
+            this.model = model
+            this.model.id = this.model.getListId()
+            this.model.findCurrentSongs(this.model.id).then(()=>{
+                setTimeout(() => {
+                  this.view.render(this.model.data)
+                }, 500);
+            })
+        },
     }
     controller.init(view, model)
 }
