@@ -39,6 +39,39 @@
             id:'',
             songs:[]
         },
+        findCurrentSongs(listId) {
+            if (!listId) return
+            var playlist = AV.Object.createWithoutData('PlayList', listId);
+            // 构建 ListSongMap 的查询
+            var query = new AV.Query('ListSongMap');
+      
+            // 查询所有选择了playlist的
+            query.equalTo('playlist', playlist);
+      
+            // 执行查询
+            return query.find().then((lists) => {
+              let songs = []
+      
+              songs = lists.map((list) => {
+                return list.attributes.song
+              })
+      
+              AV.Object.fetchAll(songs).then((s) => {
+                // 成功
+                this.data.songs = s.map((ss) => {
+                  return {
+                    id: ss.id,
+                    ...ss.attributes
+                  }
+                })
+              }, function (error) {
+                // 异常处理
+                console.log('zzzzzzzzzzz', error)
+              });
+      
+              return lists
+            })
+          },
     }
 
     let controller = {
@@ -46,6 +79,7 @@
             this.view = view
             this.model = model
             this.model.id = getListId()
+            this.model.findCurrentSongs(this.model.id)
         },
             
         getListId() {
@@ -70,4 +104,5 @@
             return id
         }        
     }
+    controller.init(view, model)
 }

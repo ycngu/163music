@@ -135,20 +135,20 @@ section.playlists > ol.songs {
   justify-content: space-between;
   font-size: 13px; }
 
-section.playlists > ol.songs > li {
+section.playlists > ol.songs  a {
   width: 32.8%;
   margin: 8px 0; }
 
-section.playlists > ol.songs > li p {
+section.playlists > ol.songs  a p {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
   line-height: 18px;
-  height: 36px;
+  /* height: 36px; */
   padding: 0 6px; }
 
-section.playlists > ol.songs > li img {
+section.playlists > ol.songs  a img {
   width: 100%; }
 
 section.songs > .list {
