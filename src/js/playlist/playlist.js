@@ -65,12 +65,11 @@
                     ...song.attributes
                   }
                 })
-                console.log(this.data.songs)
               }, function (error) {
                 // 异常处理
                 console.log('error', error)
               });
-              
+
               return songs
             })
           },
@@ -106,6 +105,9 @@
                 setTimeout(() => {
                   this.view.render(this.model.data)
                 }, 500);
+                setTimeout(() => {
+                  this.view.render(this.model.data)
+                }, 1000);
             })
         },
     }
