@@ -20,13 +20,13 @@
         songs
       } = data
       console.log(data)
-      songs.forEach((song,i) => {
-        console.log('song',song)
+      songs.forEach((song, i) => {
+        console.log('song', song)
         let $li = $(this.template
           .replace('{{song.name}}', song.name)
           .replace('{{song.singer}}', song.singer)
           .replace('{{song.id}}', song.id)
-          .replace('{{number}}', i+1)
+          .replace('{{number}}', i + 1)
           .replace('{{song.name}}', song.name)
         )
 
@@ -109,6 +109,19 @@
         // setTimeout(() => {
         //   this.view.render(this.model.data)
         // }, 1000);
+      })
+      this.bindEvents()
+    },
+    bindEvents() {
+      $('.intro_arrow').on('click',(e)=>{
+          $('.u-intro>.f-brk').toggleClass('f-thide3')
+          $('.intro_arrow').toggleClass('u-arowup')
+          $('.intro_arrow').toggleClass('u-arowdown')
+      })
+
+      $('ol.songlist').on('click','li',(e)=>{
+        id = e.currentTarget.getAttribute('data-song-id')
+        window.location.href="./song.html?id=" + id
       })
     },
   }
