@@ -2,15 +2,25 @@
   let view = {
     el: '.page > main',
     template: `
-      <ul class="lsonglist"></ul>
-      <button id="add">add</button>
-      <button id="remove">remove</button>
-      <ul class="rsonglist"></ul>
+    <h1>歌单管理</h1>
+    <div class="list-wrap">
+      <div class="left">
+        <h2>现有歌曲</h2>
+        <ul class="lsonglist"></ul>
+        <button class="btn-b" id="add">添加</button>
+      </div>
+      <div class="right">
+        <h2>{{title}}</h2>
+        <ul class="rsonglist"></ul>
+        <button class="btn-b" id="remove">删除</button>
+      </div>
+    </div>
     `,
     render(data) {
       let $el = $(this.el)
       // $el.addClass('active').siblings('.active').remove('active')
-      $el.html(this.template)
+      console.log(data)
+      $el.html(this.template.replace("{{title}}",data.title))
       let {
         leftSongs,
         leftSongId,
@@ -56,7 +66,7 @@
       leftSongId: null,
       rightSongId: null,
       listId: null,
-      ringtsongsId: null,
+      title:'',
     },
     findSongs() {
       var query = new AV.Query('Song')
@@ -240,6 +250,8 @@
       //   this.view.render(this.model.data)
       // })
       window.eventHub.on('selectxx', (data) => {
+        console.log('data',data)
+        this.model.data.title = data.name
         this.model.data.listId = data.id
         this.model.findCurrentSongs(data.id).then(() => {
           this.view.render(this.model.data)
