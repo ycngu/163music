@@ -1,4 +1,4 @@
-{
+export default function page1_1(){
     let view = {
         el: "section.songs",
         template:`

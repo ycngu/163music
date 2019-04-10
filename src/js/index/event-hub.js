@@ -1,4 +1,4 @@
-window.eventHub = {
+export default {
   events: {}, 
   emit(eventName, data){ //发布
     for(let key in this.events){

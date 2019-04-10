@@ -1,4 +1,4 @@
-{
+export default function page1_2(){
     let view = {
         el: "section.playlists",
         init() {

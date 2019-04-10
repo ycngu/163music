@@ -1,4 +1,4 @@
-{
+export default function page3(){
     let view = {
         el:".page-3",
         init(){
