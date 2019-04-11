@@ -1,4 +1,4 @@
-{
+export default function song(){
     let view = {
         el: '#app',
         init() {
@@ -51,7 +51,6 @@
                     id: song.id,
                     ...song.attributes
                 })
-                console.log(this.data.song)
                 return song
             })
         }
@@ -85,8 +84,6 @@
             // //onceLrc是在lyric.js的全局变量
             onceLrc = parseLyric(this.model.data.song.lyrics) 
             let lyricContainer = document.querySelector('.lyricContainer')
-            console.log(lyricContainer)
-            console.log('1')
             appendLyric(onceLrc,lyricContainer)
             player.addEventListener("timeupdate", function(e) {
                 // if (!that.lyric) return;

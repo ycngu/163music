@@ -1,4 +1,4 @@
-{
+export default function playlist(){
   let view = {
     el: "section.songs",
     template: `
@@ -19,9 +19,7 @@
       let {
         songs
       } = data
-      console.log(data)
       songs.forEach((song, i) => {
-        console.log('song', song)
         let $li = $(this.template
           .replace('{{song.name}}', song.name)
           .replace('{{song.singer}}', song.singer)
@@ -120,7 +118,7 @@
       })
 
       $('ol.songlist').on('click','li',(e)=>{
-        id = e.currentTarget.getAttribute('data-song-id')
+        let id = e.currentTarget.getAttribute('data-song-id')
         window.location.href="./song.html?id=" + id
       })
     },
