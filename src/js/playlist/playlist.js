@@ -38,7 +38,7 @@ export default function playlist(){
       id: '',
       songs: [],
     },
-    findCurrentSongs(listId) {
+    async findCurrentSongs(listId) {
       if (!listId) return
       let playlist = AV.Object.createWithoutData('PlayList', listId);
       // 构建 ListSongMap 的查询
@@ -47,30 +47,24 @@ export default function playlist(){
       query.equalTo('playlist', playlist);
 
       // 执行查询
-      return query.find().then((lists) => {
-        let songs = []
-
-        songs = lists.map((list) => {
-          return list.attributes.song
-        })
-
-
-        AV.Object.fetchAll(songs).then((s) => {
-          // 成功
-
-          this.data.songs = s.map((song) => {
-            return {
-              id: song.id,
-              ...song.attributes
-            }
-          })
-        }, function (error) {
-          // 异常处理
-          console.log('error', error)
+      const lists = await query.find();
+      let songs = [];
+      songs = lists.map((list) => {
+        return list.attributes.song;
+      });
+      AV.Object.fetchAll(songs).then((s) => {
+        // 成功
+        this.data.songs = s.map((song) => {
+          return {
+            id: song.id,
+            ...song.attributes
+          };
         });
-
-        return songs
-      })
+      }, function (error) {
+        // 异常处理
+        console.log('error', error);
+      });
+      return songs;
     },
     getListId() {
       let search = window.location.search

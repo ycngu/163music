@@ -5,6 +5,7 @@
 
 window.$ = require('jquery')
 var AV = require('leancloud-storage')
+require("@babel/polyfill")
 import ss from './initializers/av.js'
 import playlist from './playlist/playlist.js'
 
