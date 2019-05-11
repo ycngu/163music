@@ -1,4 +1,4 @@
-export default function playlist(){
+export default function playlist() {
   let view = {
     el: "section.songs",
     template: `
@@ -37,6 +37,7 @@ export default function playlist(){
     data: {
       id: '',
       songs: [],
+      list:{}
     },
     async findCurrentSongs(listId) {
       if (!listId) return
@@ -66,6 +67,15 @@ export default function playlist(){
       });
       return songs;
     },
+    async getPlaylist(id) {
+      var query = new AV.Query('PlayList');
+      const list = await query.get(id);
+      Object.assign(this.data.list, {
+        id: list.id,
+        ...list.attributes
+      });
+      return list;
+    },
     getListId() {
       let search = window.location.search
 
@@ -94,26 +104,28 @@ export default function playlist(){
       this.view = view
       this.model = model
       this.model.id = this.model.getListId()
+      this.model.getPlaylist(this.model.id).then(()=>{
+        console.log('1',this.model.data.list)
+        $('.plhead_fl>.u-img').attr('src',this.model.data.list.cover)
+        $(".playlist-bg").css("background-image",`url(${this.model.data.list.cover})`)
+      })
       this.model.findCurrentSongs(this.model.id).then(() => {
         setTimeout(() => {
           this.view.render(this.model.data)
         }, 500);
-        // setTimeout(() => {
-        //   this.view.render(this.model.data)
-        // }, 1000);
       })
       this.bindEvents()
     },
     bindEvents() {
-      $('.intro_arrow').on('click',(e)=>{
-          $('.u-intro>.f-brk').toggleClass('f-thide3')
-          $('.intro_arrow').toggleClass('u-arowup')
-          $('.intro_arrow').toggleClass('u-arowdown')
+      $('.intro_arrow').on('click', (e) => {
+        $('.u-intro>.f-brk').toggleClass('f-thide3')
+        $('.intro_arrow').toggleClass('u-arowup')
+        $('.intro_arrow').toggleClass('u-arowdown')
       })
 
-      $('ol.songlist').on('click','li',(e)=>{
+      $('ol.songlist').on('click', 'li', (e) => {
         let id = e.currentTarget.getAttribute('data-song-id')
-        window.location.href="./song.html?id=" + id
+        window.location.href = "./song.html?id=" + id
       })
     },
   }

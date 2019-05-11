@@ -23644,7 +23644,8 @@ function playlist() {
   var model = {
     data: {
       id: '',
-      songs: []
+      songs: [],
+      list: {}
     },
     findCurrentSongs: function () {
       var _findCurrentSongs = _asyncToGenerator(
@@ -23707,6 +23708,40 @@ function playlist() {
 
       return findCurrentSongs;
     }(),
+    getPlaylist: function () {
+      var _getPlaylist = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee2(id) {
+        var query, list;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                query = new AV.Query('PlayList');
+                _context2.next = 3;
+                return query.get(id);
+
+              case 3:
+                list = _context2.sent;
+                Object.assign(this.data.list, _objectSpread({
+                  id: list.id
+                }, list.attributes));
+                return _context2.abrupt("return", list);
+
+              case 6:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      function getPlaylist(_x2) {
+        return _getPlaylist.apply(this, arguments);
+      }
+
+      return getPlaylist;
+    }(),
     getListId: function getListId() {
       var search = window.location.search; //去掉问号
 
@@ -23739,12 +23774,15 @@ function playlist() {
       this.view = view;
       this.model = model;
       this.model.id = this.model.getListId();
+      this.model.getPlaylist(this.model.id).then(function () {
+        console.log('1', _this3.model.data.list);
+        $('.plhead_fl>.u-img').attr('src', _this3.model.data.list.cover);
+        $(".playlist-bg").css("background-image", "url(".concat(_this3.model.data.list.cover, ")"));
+      });
       this.model.findCurrentSongs(this.model.id).then(function () {
         setTimeout(function () {
           _this3.view.render(_this3.model.data);
-        }, 500); // setTimeout(() => {
-        //   this.view.render(this.model.data)
-        // }, 1000);
+        }, 500);
       });
       this.bindEvents();
     },
@@ -24069,7 +24107,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "12850" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "7891" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
